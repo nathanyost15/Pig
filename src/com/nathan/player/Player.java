@@ -4,7 +4,7 @@ import com.nathan.util.Die;
 
 public class Player {
 	private static final Die die = new Die(6);
-	private static final int WIN_VALUE = 100;
+	private static final int WIN_VALUE = 100;	
 	private int score;
 	private int turnTotal;
 	private int lastRoll;
