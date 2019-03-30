@@ -1,4 +1,4 @@
-package com.nathan.dice;
+package com.nathan.util;
 
 import java.util.Random;
 
