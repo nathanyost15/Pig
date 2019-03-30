@@ -1,42 +1,92 @@
 package com.nathan.app;
 
+import java.util.Optional;
 import java.util.Scanner;
 
+import com.nathan.action.LoseTurnTotalActionImpl;
+import com.nathan.action.ResolveTurnActionImpl;
+import com.nathan.action.TurnAction;
 import com.nathan.player.Player;
 
 public class Pig {
-	private static final Player human = new Player();
-	private static final Player computer = new Player();
-	private static final Player currentPlayer = human;
+	private static final String SWITCHING_PLAYERS = "Switching players!";
+	private static final String DUMP_TOTAL_FMT = "Dumping turn total into score, your new score is %s!";
+	private static final String SCORE_FMT = "Score is: %s\nTurnTotal is: %s";
+	private static final String ROLL_FMT = "You rolled a: %s";
+	private final Scanner scan = new Scanner(System.in);
+	private final Player human = new Player();
+	private final Player computer = new Player();
+	private Player currentPlayer = human;
+	private boolean gameRunning;
 	
-	public Pig() {		
+	public Pig() {
+		gameRunning = true;
 	}
 	
-	public void playGame() {	
-		
-	}
-
-	public void playNextRound() {	
-		
-		
-		boolean gameRunning = true;
-		while(gameRunning) {
-			Scanner scan = new Scanner(System.in);
+	public void playGame() {			
+		while(gameRunning) {			
 			System.out.print("Would you like to roll? ");
 			String sc_answer = scan.nextLine();
 			if(sc_answer.equalsIgnoreCase("yes")) {
-				int dieRoll = currentPlayer.takeTurn();
-				System.out.println(String.format(ROLL_FMT, dieRoll));
-				System.out.println(String.format(SCORE_FMT, currentPlayer.getScore(), currentPlayer.getTurnTotal()));
-				if(dieRoll == 1) {
-					currentPlayer = currentPlayer == human ? computer : human;
-					System.out.println("Switching players!");
-				}
+				takeTurn();
 			} else {
-				currentPlayer.dumpTotalScoreIntoScore();
-				System.out.println(String.format(DUMP_TOTAL_FMT, currentPlayer.getScore()));
-				currentPlayer = currentPlayer == human ? computer : human;
+				endTurn();
 			}
 		}
+		
+	}
+
+	private void endTurn() {
+		currentPlayer.dumpTotalScoreIntoScore();
+		System.out.println(String.format(DUMP_TOTAL_FMT, currentPlayer.getScore()));
+		swapTurns();
+	}
+
+	private void takeTurn() {
+		playNextRound();
+		displayScore();
+		checkWinnerIsFound();
+		if(currentPlayer.getLastRoll() == 1) {
+			swapTurns();
+			System.out.println(SWITCHING_PLAYERS);
+		}
+	}
+
+	private void checkWinnerIsFound() {
+		Optional<Player> winner = Optional.ofNullable(Player.getWinner(human, computer));
+		if(winner.isPresent()) {
+			System.out.println("Winner has been found!");
+			gameRunning = false;
+		}
+	}
+
+	private void displayScore() {
+		int dieRoll = currentPlayer.getLastRoll();
+		System.out.println(String.format(ROLL_FMT, dieRoll));
+		System.out.println(String.format(SCORE_FMT, currentPlayer.getScore(), currentPlayer.getTurnTotal()));
+	}
+
+	public void playNextRound() {	
+		int rollAmount = currentPlayer.getRoll();
+		TurnAction turnAction = getTurnAction(rollAmount);	
+		turnAction.doAction(currentPlayer, rollAmount);
+	}
+
+	private void swapTurns() {
+		currentPlayer = currentPlayer == human ? computer : human;
+	}
+
+	private TurnAction getTurnAction(int rollAmount) {
+		TurnAction action = null;
+		switch(rollAmount) {
+			case 1:
+				action = new LoseTurnTotalActionImpl();				
+				break;
+			default:
+				action = new ResolveTurnActionImpl();
+				//currentPlayer.setTurnTotal(currentPlayer.getTurnTotal() + rollAmount);
+				break;
+		}
+		return action;
 	}
 }
