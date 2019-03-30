@@ -21,7 +21,7 @@ public class Pig {
 		
 		boolean gameRunning = true;
 		while(gameRunning) {
-			Scanner scan = new Scdanner(System.in);
+			Scanner scan = new Scanner(System.in);
 			System.out.print("Would you like to roll? ");
 			String sc_answer = scan.nextLine();
 			if(sc_answer.equalsIgnoreCase("yes")) {
