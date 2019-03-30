@@ -1,5 +1,8 @@
 package com.nathan.player;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import com.nathan.util.Die;
 
 public class Player {
@@ -45,9 +48,10 @@ public class Player {
 		return lastRoll;
 	}
 	
-	public static Player getWinner(Player player1, Player player2) {
-		return player1.getScore() >= WIN_VALUE ? player1 :  
-			player2.getScore() >= WIN_VALUE ? player2 : null;
+	public static Optional<Player> getWinner(Player player1, Player player2) {
+		return Arrays.asList(player1, player2).stream()
+				.filter(player -> player.getScore() >= WIN_VALUE)
+				.findFirst();		
 	}
 
 	public int getLastRoll() {

@@ -52,7 +52,7 @@ public class Pig {
 	}
 
 	private void checkWinnerIsFound() {
-		Optional<Player> winner = Optional.ofNullable(Player.getWinner(human, computer));
+		Optional<Player> winner = Player.getWinner(human, computer);
 		if(winner.isPresent()) {
 			System.out.println("Winner has been found!");
 			gameRunning = false;
