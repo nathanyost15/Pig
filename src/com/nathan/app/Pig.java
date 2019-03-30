@@ -26,14 +26,13 @@ public class Pig {
 	public void playGame() {			
 		while(gameRunning) {			
 			System.out.print("Would you like to roll? ");
-			String sc_answer = scan.nextLine();
-			if(sc_answer.equalsIgnoreCase("yes")) {
+			String answer = scan.nextLine();
+			if(answer.equalsIgnoreCase("yes")) {
 				takeTurn();
 			} else {
 				endTurn();
 			}
-		}
-		
+		}		
 	}
 
 	private void endTurn() {
@@ -78,14 +77,10 @@ public class Pig {
 
 	private TurnAction getTurnAction(int rollAmount) {
 		TurnAction action = null;
-		switch(rollAmount) {
-			case 1:
-				action = new LoseTurnTotalActionImpl();				
-				break;
-			default:
+		if(rollAmount == 1) {		
+			action = new LoseTurnTotalActionImpl();				
+		} else {
 				action = new ResolveTurnActionImpl();
-				//currentPlayer.setTurnTotal(currentPlayer.getTurnTotal() + rollAmount);
-				break;
 		}
 		return action;
 	}
