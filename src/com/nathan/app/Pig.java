@@ -32,6 +32,7 @@ public class Pig {
 			} else {
 				endTurn();
 			}
+			checkWinnerIsFound();
 		}		
 	}
 
@@ -44,7 +45,6 @@ public class Pig {
 	private void takeTurn() {
 		playNextRound();
 		displayScore();
-		checkWinnerIsFound();
 		if(currentPlayer.getLastRoll() == 1) {
 			swapTurns();
 			System.out.println(SWITCHING_PLAYERS);
